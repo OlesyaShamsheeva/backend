@@ -4,7 +4,7 @@ const User = require('../models/User')
 const keys = require('../config/keys')
 
 
-module.exports.login = async function (req, res) {
+module.exports.authorization = async function (req, res) {
   const candidate = await User.findOne({emailAddress: req.body.emailAddress})
 
   if (candidate) {
