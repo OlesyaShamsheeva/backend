@@ -1,17 +1,67 @@
-module.exports.authorization= (req, res) => {
-  res.status(200).json({
-    login: {
-      emailAddress: req.body.emailAddress,
-      password: req.body.password,
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const User = require('../models/User')
+const keys = require('../config/keys')
+
+
+module.exports.login = async function (req, res) {
+  const candidate = await User.findOne({emailAddress: req.body.emailAddress})
+
+  if (candidate) {
+    // Проверка пароля, пользователь существует
+    const passwordResult = bcrypt.compareSync(req.body.password, candidate.password)
+    if (passwordResult) {
+      // Генерация токена, пароли совпали
+      const token = jwt.sign({
+        email: candidate.emailAddress,
+        userId: candidate._id,
+      }, keys.jwt, {expiresIn: 60 * 60})
+
+      res.status(200).json({
+        token: `Bearer ${token}`
+      })
+    } else {
+      // Пароли не совпали
+      res.status(401).json({
+        message: 'Пароли не совпадают. Попробуйте снова.'
+      })
     }
-  })
-}
-module.exports.registration = (req, res) => {
-  res.status(200).json({
-    registration: "from controller"
-  })
+  }
+  else {
+    // Пользователя нет, ошибка
+    res.status(404).json({
+      message: 'Пользователь с таким email не найден.'
+    })
+  }
 }
 
+module.exports.registration = async (req, res) => {
+  const candidate = await User.findOne({emailAddress: req.body.emailAddress})
+  if (candidate) {
+    res.status(409).json({message: "Такой email уже занят.Попробуйте другой"}) //статусы ищем в поисковике http status
+  } else {
+    const salt = bcrypt.genSaltSync(10) //сгенерировать шифрование
+    const password = req.body.password
+    const user = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      emailAddress: req.body.emailAddress,
+      password: bcrypt.hashSync(password, salt)//создать хэш нашего пароля
 
+    })
+    try {
+      await user.save()
+      res.status(201).json(user)
+    } catch (e) {
+      //обработать ошибку
+    }
+
+  }
+}
 //req-получить данные от клиента
+
+
+
+
+
 

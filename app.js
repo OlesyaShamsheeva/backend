@@ -1,9 +1,17 @@
+
 const express = require("express")
 const app = express()
-
+const mongoose = require("mongoose")
 const authRoutes=require("./routes/auth")
 const articleRoutes=require("./routes/article")
 const userRoutes=require("./routes/user")
+
+const keys=require("./config/keys")
+
+mongoose.connect(keys.mongoURI)
+    .then(()=>{
+      console.log("Mongo")})
+    .catch(error=>console.log(error))
 
 
 app.use(require("morgan")("dev")) //мы в режиме разработки логирование
@@ -22,3 +30,5 @@ app.use("/api/article",articleRoutes)
 app.use("/api/user",userRoutes)
 
 module.exports=app //экспорт нашего файла а
+
+
