@@ -8,6 +8,8 @@ const router = express.Router() //создаю роутер
 router.get("/:id", passport.authenticate("jwt", {session: false}), controller.getById)
 // router.patch("/:id", upload.single("image"),
 //     passport.authenticate("jwt", {session: false}), controller.update)
-router.post('/', passport.authenticate('jwt', {session: false}), upload.single('image'), controller.create)
 
+//обновление картинок
+router.post('/', passport.authenticate('jwt', {session: false}), upload.single('image'), controller.create)
+router.patch('/:id', passport.authenticate('jwt', {session: false}), upload.single('image'), controller.update)
 module.exports = router //экспорт нашего файла наружу

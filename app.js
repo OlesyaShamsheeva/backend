@@ -17,7 +17,7 @@ mongoose.connect(keys.mongoURI)
 
 
 app.use(require("morgan")("dev")) //мы в режиме разработки логирование
-// app.use('/uploads', express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 app.use(express.static(path.join(__dirname, 'uploads')))
 app.use(require("cors")("dev"))//на другом локалхосте,но можем взаимодействовать с нашим сервером
 app.use(passport.initialize())
