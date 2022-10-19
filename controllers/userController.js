@@ -12,23 +12,28 @@ module.exports.getById = async (req, res) => {
   }
 }
 //получить конкретного юзера
+module.exports.create = async function(req, res) {
+  console.log('req', req.body)
+  console.log("req.file", req.file)
+  const user= new User({
+    name: req.body.avatar,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    emailAddress: req.body.emailAddress,
+    password: req.body.password,
+    user: req.user.id,
+    avatar: req.file ? req.file.path : '',
+  })
 
-module.exports.create=
-    async (req, res) => {
-      try{  const user=new User({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        description: req.body.description,
-        avatar: req.file?req.file.path:""
-      })
-    await  user.save()
-        res.status(201).json(user)
-      }
-      catch(e){
-    errorHandler((res,e))
-      }
-    }
-//создание аватара
+  try {
+    await user.save()
+    res.status(201).json(user)
+  } catch (e) {
+    errorHandler(res, e)
+  }
+}
+
+//
 // module.exports.update = async (req, res) => {
 //   try {
 //     const update = await new User ({
@@ -51,3 +56,6 @@ module.exports.create=
 // }
 // }
 // //изменять
+
+
+
