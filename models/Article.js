@@ -38,7 +38,7 @@ const articleSchema = new Schema({
     type: Date,
     default: Date.now()
   },
-  userId:{
+  user:{
     ref:"users",
     type: Schema.Types.ObjectId
   }

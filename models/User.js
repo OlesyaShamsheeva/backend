@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const articleSchema = new Schema({
+const userSchema = new Schema({
   firstName: {
     type: String,
     required:true //обязательное поле
@@ -27,8 +27,12 @@ const articleSchema = new Schema({
     ref:"users",
     type: Schema.Types.ObjectId
   },
+  description:{
+    type: String,
+    default:""
+  },
 
 }) // создаем схему
 
 
-module.exports = mongoose.model("articles", articleSchema)
+module.exports = mongoose.model("users", userSchema)

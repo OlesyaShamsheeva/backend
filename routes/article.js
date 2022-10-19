@@ -1,11 +1,12 @@
 const express = require("express");
 const controller=require("../controllers/articleController")
+const passport=require('passport')
 const router = express.Router()
 
-
-router.post('/', controller.create)
-router.get('/', controller.getAll)
-router.get('/:id', controller.getById)
+router.get('/:articleId', passport.authenticate("jwt",{session:false}),controller.getByArticleId)
+router.get('/', passport.authenticate("jwt",{session:false}), controller.getAll)
+router.post('/', passport.authenticate("jwt",{session:false}),controller.create)
+router.get('/:id', passport.authenticate("jwt",{session:false}),controller.getById)
 
 
 

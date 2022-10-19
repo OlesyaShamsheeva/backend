@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const keys = require('../config/keys')
-
+const errorHandler=require("../utils/errorHandler")
 
 module.exports.authorization = async function (req, res) {
   const candidate = await User.findOne({emailAddress: req.body.emailAddress})
@@ -13,7 +13,7 @@ module.exports.authorization = async function (req, res) {
     if (passwordResult) {
       // Генерация токена, пароли совпали
       const token = jwt.sign({
-        email: candidate.emailAddress,
+        emailAddress: candidate.emailAddress,
         userId: candidate._id,
       }, keys.jwt, {expiresIn: 60 * 60})
 
@@ -53,7 +53,7 @@ module.exports.registration = async (req, res) => {
       await user.save()
       res.status(201).json(user)
     } catch (e) {
-      //обработать ошибку
+    errorHandler(res,e)
     }
 
   }
