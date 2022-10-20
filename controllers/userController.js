@@ -1,7 +1,7 @@
 const User = require("../models/User")
 const errorHandler = require("../utils/errorHandler");
 
-
+//получить конкретного юзера
 module.exports.getById = async (req, res) => {
   try {
     const users = await User.find({
@@ -11,42 +11,30 @@ module.exports.getById = async (req, res) => {
     errorHandler(res, e)
   }
 }
-//получить конкретного юзера
-module.exports.create = async function(req, res) {
-  console.log('req', req.body)
-  console.log("req.file", req.file)
-  const user= new User({
-    name: req.body.avatar,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    emailAddress: req.body.emailAddress,
-    password: req.body.password,
-    user: req.user.id,
-    avatar: req.file ? req.file.path : '',
-  })
 
+//удаление пользователя
+module.exports.removeUser = async function(req, res) {
   try {
-    await user.save()
-    res.status(201).json(user)
+    await User.remove({_id: req.params.id})
+    res.status(200).json({
+      message: 'Пользователь был удален.'
+    })
   } catch (e) {
     errorHandler(res, e)
   }
 }
 
-
-
-module.exports.update = async function(req, res) {
+//изменение профиля
+module.exports.updateProfile = async function(req, res) {
   const updated = {
-    name: req.body.name
+    name: req.body.avatar,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    avatar: req.file ? req.file.path : '',
   }
-
-  if (req.file) {
-    updated.avatar = req.file.path
-  }
-
   try {
     const user = await User.findOneAndUpdate(
-        {_id: req.params.id},
+        {id: req.params.id},
         {$set: updated},
         {new: true}
     )
@@ -55,32 +43,19 @@ module.exports.update = async function(req, res) {
     errorHandler(res, e)
   }
 }
-//
-// module.exports.update = async (req, res) => {
-//   try {
-//     const update = await new User ({
-//       name: req.body.avatar,
-//       firstName: req.body.firstName,
-//       lastName: req.body.lastName,
-//       emailAddress: req.body.emailAddress,
-//       password: req.body.password,
-//       user: req.user.id,
-//       avatar: req.body.avatar,
-//     }).save()
-//   const user = await User.findOneAndUpdate(
-//       {_id: req.params.id},
-//       {$set: req.body},
-//       {new: true}
-//   )
-//   res.status(200).json(user)
-// }
-// catch
-// (e)
-// {
-//   errorHandler(res, e)
-// }
-// }
-// //изменять
+//удалить фотографию
+module.exports.removeImage = async function(req, res) {
+  try {
+    await User.remove({avatar: req.params.avatar})
+    res.status(200).json({
+      message: 'аватар был удален.'
+    })
+  } catch (e) {
+    errorHandler(res, e)
+  }
+}
+
+
 
 
 
